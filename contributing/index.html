@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#contributing" class="md-skip">
+        <a href="#collaboration-contributing" class="md-skip">
           Skip to content
         </a>
       
@@ -300,8 +300,6 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -334,8 +332,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -344,20 +340,35 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#steps-to-contribute" class="md-nav__link">
+  <a href="#collaboration-contributing" class="md-nav__link">
     <span class="md-ellipsis">
-      👣 Steps to Contribute
+      🤝 Collaboration &amp; Contributing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🤝 Collaboration &amp; Contributing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#discussions-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      🗣️ Discussions &amp; Issues
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#local-setup" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#maintainer-workflow" class="md-nav__link">
     <span class="md-ellipsis">
-      🧪 Local Setup
+      🛠 Maintainer Workflow
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -408,8 +419,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -418,20 +427,35 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#steps-to-contribute" class="md-nav__link">
+  <a href="#collaboration-contributing" class="md-nav__link">
     <span class="md-ellipsis">
-      👣 Steps to Contribute
+      🤝 Collaboration &amp; Contributing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🤝 Collaboration &amp; Contributing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#discussions-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      🗣️ Discussions &amp; Issues
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#local-setup" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#maintainer-workflow" class="md-nav__link">
     <span class="md-ellipsis">
-      🧪 Local Setup
+      🛠 Maintainer Workflow
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -459,34 +483,44 @@
   
 
 
-<h1 id="contributing">🤝 Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h1>
-<h2 id="steps-to-contribute">👣 Steps to Contribute<a class="headerlink" href="#steps-to-contribute" title="Permanent link">&para;</a></h2>
+  <h1>Contributing</h1>
+
+<h2 id="collaboration-contributing">🤝 Collaboration &amp; Contributing<a class="headerlink" href="#collaboration-contributing" title="Permanent link">&para;</a></h2>
+<p>We love community contributions! To collaborate:</p>
 <ol>
-<li>Fork and branch:</li>
+<li><strong>Fork</strong> the repo and create a feature branch:</li>
 </ol>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/my-change
-<span class="sb">````</span>
-
-<span class="m">2</span>.<span class="w"> </span>Format<span class="w"> </span>and<span class="w"> </span>lint:
-
-<span class="sb">```</span>bash
-make<span class="w"> </span>lint
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/my-amazing-idea
 </code></pre></div>
 <ol>
-<li>Test:</li>
+<li><strong>Follow code style</strong> – run:</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="w"> </span>make<span class="w"> </span>lint<span class="w">  </span><span class="c1"># runs flake8, isort, black</span>
+<span class="w"> </span>make<span class="w"> </span>format<span class="w">  </span><span class="c1"># formats code with black</span>
+</code></pre></div>
+<ol>
+<li><strong>Write &amp; run tests</strong>:</li>
 </ol>
 <div class="highlight"><pre><span></span><code>pytest
 </code></pre></div>
 <ol>
-<li>Open a Pull Request!</li>
+<li><strong>Commit</strong> with clear messages and open a <strong>Pull Request</strong>.
+   GitHub Actions will lint + test your branch automatically.</li>
 </ol>
 <hr />
-<h2 id="local-setup">🧪 Local Setup<a class="headerlink" href="#local-setup" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>venv
-<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
-pytest
-</code></pre></div>
+<h3 id="discussions-issues">🗣️ Discussions &amp; Issues<a class="headerlink" href="#discussions-issues" title="Permanent link">&para;</a></h3>
+<ul>
+<li>💡 Questions / ideas → <a href="https://github.com/ganiyevuz/django-trusted-devices/discussions">GitHub Discussions</a></li>
+<li>🐛 Bugs / feature requests → <a href="https://github.com/ganiyevuz/django-trusted-devices/issues">GitHub Issues</a></li>
+</ul>
+<hr />
+<h3 id="maintainer-workflow">🛠 Maintainer Workflow<a class="headerlink" href="#maintainer-workflow" title="Permanent link">&para;</a></h3>
+<ul>
+<li>PRs require at least one approval and passing CI</li>
+<li>We <strong>squash‑merge</strong> to keep history clean</li>
+<li>Follows <strong>Semantic Versioning</strong> (<code>MAJOR.MINOR.PATCH</code>), tagged as <code>vX.Y.Z</code></li>
+</ul>
+<hr />
 
 
 
