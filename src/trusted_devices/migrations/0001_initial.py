@@ -16,25 +16,101 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='TrustedDevice',
+            name="TrustedDevice",
             fields=[
-                ('device_uid', models.UUIDField(default=uuid.uuid4, editable=False, help_text='Unique identifier for the device.', primary_key=True, serialize=False)),
-                ('user_agent', models.TextField(help_text='User agent string of the browser or app used for login.')),
-                ('country', models.CharField(blank=True, help_text="Country derived from the device's IP address.", max_length=100, null=True)),
-                ('region', models.CharField(blank=True, help_text="Region/state derived from the device's IP address.", max_length=100, null=True)),
-                ('city', models.CharField(blank=True, help_text="City derived from the device's IP address.", max_length=100, null=True)),
-                ('ip_address', models.GenericIPAddressField(help_text='IP address of the device used for authentication.')),
-                ('last_seen', models.DateTimeField(auto_now=True, help_text='The last time this device was active.')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when this device was first registered.')),
-                ('can_update_other_devices', models.BooleanField(default=True, help_text='Whether this device can update settings for other devices.')),
-                ('can_delete_other_devices', models.BooleanField(default=True, help_text='Whether this device can delete other devices.')),
-                ('user', models.ForeignKey(help_text='The user to whom this device belongs.', on_delete=django.db.models.deletion.CASCADE, related_name='trusted_devices', to=settings.AUTH_USER_MODEL)),
+                (
+                    "device_uid",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        help_text="Unique identifier for the device.",
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "user_agent",
+                    models.TextField(
+                        help_text="User agent string of the browser or app used for login."
+                    ),
+                ),
+                (
+                    "country",
+                    models.CharField(
+                        blank=True,
+                        help_text="Country derived from the device's IP address.",
+                        max_length=100,
+                        null=True,
+                    ),
+                ),
+                (
+                    "region",
+                    models.CharField(
+                        blank=True,
+                        help_text="Region/state derived from the device's IP address.",
+                        max_length=100,
+                        null=True,
+                    ),
+                ),
+                (
+                    "city",
+                    models.CharField(
+                        blank=True,
+                        help_text="City derived from the device's IP address.",
+                        max_length=100,
+                        null=True,
+                    ),
+                ),
+                (
+                    "ip_address",
+                    models.GenericIPAddressField(
+                        help_text="IP address of the device used for authentication."
+                    ),
+                ),
+                (
+                    "last_seen",
+                    models.DateTimeField(
+                        auto_now=True, help_text="The last time this device was active."
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when this device was first registered.",
+                    ),
+                ),
+                (
+                    "can_update_other_devices",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Whether this device can update settings for other devices.",
+                    ),
+                ),
+                (
+                    "can_delete_other_devices",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Whether this device can delete other devices.",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        help_text="The user to whom this device belongs.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="trusted_devices",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Trusted Device',
-                'verbose_name_plural': 'Trusted Devices',
-                'ordering': ['-created_at'],
-                'indexes': [models.Index(fields=['user'], name='trusted_dev_user_id_99b37a_idx')],
+                "verbose_name": "Trusted Device",
+                "verbose_name_plural": "Trusted Devices",
+                "ordering": ["-created_at"],
+                "indexes": [
+                    models.Index(fields=["user"], name="trusted_dev_user_id_99b37a_idx")
+                ],
             },
         ),
     ]

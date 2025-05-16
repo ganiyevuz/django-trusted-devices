@@ -77,11 +77,13 @@ class TrustedDeviceTokenObtainPairSerializer(TokenObtainPairSerializer):
             city=location_data.get("city"),
         )
 
-        data.update({
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
-            "device_uid": refresh["device_uid"],
-        })
+        data.update(
+            {
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+                "device_uid": refresh["device_uid"],
+            }
+        )
 
         return data
 
@@ -112,9 +114,11 @@ class TrustedDeviceTokenRefreshSerializer(TokenRefreshSerializer):
             )
 
         user_id = refresh.payload.get(api_settings.USER_ID_CLAIM)
-        user = get_user_model().objects.filter(
-            **{api_settings.USER_ID_FIELD: user_id}
-        ).first()
+        user = (
+            get_user_model()
+            .objects.filter(**{api_settings.USER_ID_FIELD: user_id})
+            .first()
+        )
 
         if not user or not api_settings.USER_AUTHENTICATION_RULE(user):
             raise AuthenticationFailed(
@@ -167,7 +171,10 @@ class TrustedDeviceTokenVerifySerializer(TokenVerifySerializer):
                 )
 
         device_uid = token.payload.get("device_uid")
-        if not device_uid or not TrustedDevice.objects.filter(device_uid=device_uid).exists():
+        if (
+            not device_uid
+            or not TrustedDevice.objects.filter(device_uid=device_uid).exists()
+        ):
             raise AuthenticationFailed(
                 self.error_messages["device_uid_mismatch_with_user"],
                 code="device_uid_mismatch_with_user",

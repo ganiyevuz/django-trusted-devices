@@ -39,14 +39,15 @@ class TrustedDeviceAuthentication(JWTAuthentication):
             # Attempt to decode the token without verifying the signature to extract device_uid
             try:
                 unverified_payload = decode(
-                    raw_token,
-                    options={"verify_signature": False}
+                    raw_token, options={"verify_signature": False}
                 )
                 device_uid = unverified_payload.get("device_uid")
                 exp = unverified_payload.get("exp")
 
                 # If token expired, and device_uid exists — delete that device
-                if exp and datetime.fromtimestamp(exp, dt_timezone.utc) < datetime.now(dt_timezone.utc):
+                if exp and datetime.fromtimestamp(exp, dt_timezone.utc) < datetime.now(
+                    dt_timezone.utc
+                ):
                     if device_uid:
                         TrustedDevice.objects.filter(device_uid=device_uid).delete()
 

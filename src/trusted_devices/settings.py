@@ -12,7 +12,9 @@ _TRUSTED_DEVICE_DEFAULTS = {
 
 
 class TrustedDeviceSettings:
-    def __init__(self, user_settings: dict[str, Any] = None, defaults: dict[str, Any] = None):
+    def __init__(
+        self, user_settings: dict[str, Any] = None, defaults: dict[str, Any] = None
+    ):
         self._user_settings = user_settings or getattr(settings, "TRUSTED_DEVICE", {})
         self._defaults = defaults or _TRUSTED_DEVICE_DEFAULTS
 

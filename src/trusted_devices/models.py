@@ -91,6 +91,7 @@ class TrustedDevice(Model):
             Index(fields=["user"]),
         ]
 
+
 # class TrustedDeviceToken(Model):
 #     device = ForeignKey(TrustedDevice, on_delete=CASCADE)
 #     token = CharField(max_length=255, unique=True)

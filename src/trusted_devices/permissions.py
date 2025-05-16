@@ -18,7 +18,11 @@ class TrustedDevicePermission(BasePermission):
         Returns True if the user is authenticated and has any trusted device.
         """
         user = request.user
-        return user.is_authenticated and hasattr(user, 'trusted_devices') and user.trusted_devices.exists()
+        return (
+            user.is_authenticated
+            and hasattr(user, "trusted_devices")
+            and user.trusted_devices.exists()
+        )
 
     def has_object_permission(self, request, view, obj: TrustedDevice):
         """
@@ -34,6 +38,7 @@ class DeletableTrustedDevicePermission(BasePermission):
     - Current device has permission to delete others.
     - Target device is older than the allowed delay period.
     """
+
     message = (
         "You are not allowed to delete this device. "
         "Either global deletion is disabled, your current device lacks permission, "
@@ -42,12 +47,18 @@ class DeletableTrustedDevicePermission(BasePermission):
 
     def has_object_permission(self, request, view, obj: TrustedDevice):
         if not trusted_device_settings.ALLOW_GLOBAL_DELETE:
-            self.message = "Device deletion is globally disabled by the system administrator."
+            self.message = (
+                "Device deletion is globally disabled by the system administrator."
+            )
             return False
 
-        current_device: TrustedDevice = getattr(request.user, 'current_trusted_device', None)
+        current_device: TrustedDevice = getattr(
+            request.user, "current_trusted_device", None
+        )
         if not current_device:
-            self.message = "Your current session could not be verified as a trusted device."
+            self.message = (
+                "Your current session could not be verified as a trusted device."
+            )
             return False
 
         if not current_device.can_delete_other_devices:
@@ -75,6 +86,7 @@ class EditableTrustedDevicePermission(BasePermission):
     - Current device has permission to update others.
     - Target device is older than the allowed delay period.
     """
+
     message = (
         "You are not allowed to update this device. "
         "Either global editing is disabled, your current device lacks permission, "
@@ -83,12 +95,18 @@ class EditableTrustedDevicePermission(BasePermission):
 
     def has_object_permission(self, request, view, obj: TrustedDevice):
         if not trusted_device_settings.ALLOW_GLOBAL_UPDATE:
-            self.message = "Device editing is globally disabled by the system administrator."
+            self.message = (
+                "Device editing is globally disabled by the system administrator."
+            )
             return False
 
-        current_device: TrustedDevice = getattr(request.user, 'current_trusted_device', None)
+        current_device: TrustedDevice = getattr(
+            request.user, "current_trusted_device", None
+        )
         if not current_device:
-            self.message = "Your current session could not be verified as a trusted device."
+            self.message = (
+                "Your current session could not be verified as a trusted device."
+            )
             return False
 
         if not current_device.can_update_other_devices:

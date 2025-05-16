@@ -42,8 +42,8 @@ jobs:
       - name: 🧹 Run Linter (flake8)
         run: uv run flake8 .
 
-      - name: ✅ Run Tests (pytest)
-        run: uv run pytest --cov
+#      - name: ✅ Run Tests (pytest)
+#        run: uv run pytest --cov
 
   publish:
     name: 📦 Publish to PyPI

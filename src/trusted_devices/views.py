@@ -1,6 +1,10 @@
 from rest_framework.mixins import UpdateModelMixin, ListModelMixin, DestroyModelMixin
 from rest_framework.viewsets import GenericViewSet
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
 
 from trusted_devices.models import TrustedDevice
 from trusted_devices.permissions import (
@@ -19,24 +23,30 @@ from trusted_devices.serializers import (
 
 class TrustedDeviceTokenObtainPairView(TokenObtainPairView):
     """View to obtain access and refresh tokens with device tracking."""
+
     serializer_class = TrustedDeviceTokenObtainPairSerializer
 
 
 class TrustedDeviceTokenRefreshView(TokenRefreshView):
     """View to refresh access tokens while validating trusted devices."""
+
     serializer_class = TrustedDeviceTokenRefreshSerializer
 
 
 class TrustedDeviceTokenVerifyView(TokenVerifyView):
     """View to verify access token and ensure a device is still trusted."""
+
     serializer_class = TrustedDeviceTokenVerifySerializer
 
 
-class TrustedDeviceViewSet(UpdateModelMixin, DestroyModelMixin, ListModelMixin, GenericViewSet):
+class TrustedDeviceViewSet(
+    UpdateModelMixin, DestroyModelMixin, ListModelMixin, GenericViewSet
+):
     """
     ViewSet for listing, updating, and deleting TrustedDevice instances
     belonging to the authenticated user.
     """
+
     permission_classes = [TrustedDevicePermission]
     serializer_class = TrustedDeviceListSerializer
     lookup_url_kwarg = "device_uid"

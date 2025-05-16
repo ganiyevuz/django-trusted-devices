@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class TrustedDevicesConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'trusted_devices'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "trusted_devices"
 
     def ready(self):
-        from . import signals
+        from . import signals  # noqa
