@@ -300,6 +300,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#simplejwt-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔐 SimpleJWT configuration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#token-views" class="md-nav__link">
     <span class="md-ellipsis">
       🔐 Token Views
@@ -418,6 +427,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#simplejwt-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔐 SimpleJWT configuration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#token-views" class="md-nav__link">
     <span class="md-ellipsis">
       🔐 Token Views
@@ -460,8 +478,27 @@
 
 
 <h1 id="usage-guide">🧩 Usage Guide<a class="headerlink" href="#usage-guide" title="Permanent link">&para;</a></h1>
+<h2 id="simplejwt-configuration">🔐 SimpleJWT configuration<a class="headerlink" href="#simplejwt-configuration" title="Permanent link">&para;</a></h2>
+<p>Replace default SimpleJWT serializers with TrustedDevice serializers.:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timedelta</span>
+
+<span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;DEFAULT_AUTHENTICATION_CLASSES&#39;</span><span class="p">:</span> <span class="p">(</span>
+        <span class="s1">&#39;trusted_devices.authentication.TrustedDeviceAuthentication&#39;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">SIMPLE_JWT</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;ACCESS_TOKEN_LIFETIME&quot;</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">60</span><span class="p">),</span>
+    <span class="s2">&quot;REFRESH_TOKEN_LIFETIME&quot;</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
+    <span class="s2">&quot;AUTH_HEADER_TYPES&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Bearer&quot;</span><span class="p">,),</span>
+    <span class="s2">&quot;TOKEN_OBTAIN_SERIALIZER&quot;</span><span class="p">:</span> <span class="s1">&#39;trusted_devices.serializers.TrustedDeviceTokenObtainPairSerializer&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;TOKEN_REFRESH_SERIALIZER&quot;</span><span class="p">:</span> <span class="s1">&#39;trusted_devices.serializers.TrustedDeviceTokenRefreshSerializer&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;TOKEN_VERIFY_SERIALIZER&quot;</span><span class="p">:</span> <span class="s1">&#39;trusted_devices.serializers.TrustedDeviceTokenVerifySerializer&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
 <h2 id="token-views">🔐 Token Views<a class="headerlink" href="#token-views" title="Permanent link">&para;</a></h2>
-<p>Replace default SimpleJWT views:</p>
+<p>Replace default SimpleJWT views with TrustedDevice views:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">trusted_devices.views</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">TrustedDeviceTokenObtainPairView</span><span class="p">,</span>
     <span class="n">TrustedDeviceTokenRefreshView</span><span class="p">,</span>
@@ -475,7 +512,9 @@
 <span class="p">]</span>
 <span class="err">````</span>
 
-<span class="c1">## 📡 Device API</span>
+<span class="c1">### 📡 Device Management API</span>
+
+<span class="n">Use</span> <span class="n">provided</span> <span class="err">`</span><span class="n">TrustedDeviceViewSet</span><span class="err">`</span><span class="p">:</span>
 
 <span class="err">```</span><span class="n">python</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">trusted_devices.views</span><span class="w"> </span><span class="kn">import</span> <span class="n">TrustedDeviceViewSet</span>
