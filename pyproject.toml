@@ -29,6 +29,9 @@ keywords = ["django", "trusted devices", "user security", "sessions", "login", "
 dependencies = [
     "django>=4.2,<5.3",
     "djangorestframework>=3.14.0",
+    "djangorestframework-simplejwt>=5.5.0",
+    "drf-yasg>=1.21.10",
+    "httpx>=0.28.1",
 ]
 
 [project.optional-dependencies]

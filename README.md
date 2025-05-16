@@ -1,156 +1,211 @@
-# 🧱 Django Package Template
+# 🔐 Django Trusted Device
 
-A modern, minimal, and production-ready template for building and publishing reusable Django packages to PyPI with ease.
-
-🔗 GitHub: [ganiyevuz/django-package-template](https://github.com/ganiyevuz/django-package-template)
-
----
-
-## ✨ Features
-
-- ✅ Clean and minimal project structure for Django package development
-- ⚙️ CI/CD via GitHub Actions for testing and automated PyPI publishing
-- 📦 Modern dependency management with [`uv`](https://github.com/astral-sh/uv)
-- 🐍 Python 3.10–3.13 & Django 4.2–5.2 support
-- 🧪 Preconfigured pytest and coverage
-- 🧹 Makefile with common development commands
-- 📄 MIT License
+A plug-and-play Django app that adds **trusted device management** to your API authentication system using
+`djangorestframework-simplejwt`. Automatically associates tokens with user devices, tracks login locations,
+and enables per-device control over access and session management.
 
 ---
 
-## 🚀 Quickstart
+## 🚀 Features
 
-### 1. Create a New Package from Template
+* 🔑 **JWT tokens** include a unique `device_uid`
+* 🌍 **Auto-detect IP, region, and city** via [ipapi.co](https://ipapi.co)
+* 🛡️ **Per-device session tracking** with update/delete restrictions
+* 🔄 **Custom** `TokenObtainPair`, `TokenRefresh`, and `TokenVerify` views
+* 🚪 **Logout unwanted sessions** from the device list
+* 🧼 **Automatic cleanup**, optional global control rules
+* 🧩 **API-ready** – supports DRF out of the box
+* ⚙️ **Fully customizable** via `TRUSTED_DEVICE` Django settings
+* 🚫 **Rejects refresh/verify** from unknown or expired devices
+
+---
+
+## 📦 Installation
 
 ```bash
-# Clone the template repository
-git clone https://github.com/ganiyevuz/django-package-template.git your-package-name
-cd your-package-name
+pip install django-trusted-device
+```
 
-# Reinitialize git
-rm -rf .git
-git init
-git add .
-git commit -m "Initial commit using Django package template"
-````
+Add to your `INSTALLED_APPS`:
 
----
+```python
+INSTALLED_APPS = [
+    ...
+    'trusted_devices',
+    'rest_framework_simplejwt.token_blacklist',
+]
+```
 
-### 2. Customize Metadata
-
-Edit the following files:
-
-* `pyproject.toml` – package name, version, author, dependencies
-* `README.md` – your own documentation
-* `LICENSE` – update copyright
-
-You can also rename the main Django app inside `src/` to match your desired package name.
-
----
-
-### 3. Set Up the Development Environment
+Run migrations:
 
 ```bash
-# Install uv (if not installed)
-curl -LsSf https://astral.sh/uv/install.sh | sh
+python manage.py migrate
+```
 
-# Create and activate virtual environment
+---
+
+## ⚙️ Configuration
+
+Customize behavior in `settings.py`:
+
+```python
+TRUSTED_DEVICE = {
+    "DELETE_DELAY_MINUTES": 60 * 24 * 7,  # 7 days
+    "UPDATE_DELAY_MINUTES": 60,           # 1 hour
+    "ALLOW_GLOBAL_DELETE": True,
+    "ALLOW_GLOBAL_UPDATE": True,
+}
+```
+
+---
+
+## 🧩 Usage
+
+### 🔐 Custom Token Views
+
+Replace the default SimpleJWT views with:
+
+```python
+from trusted_devices.views import (
+    TrustedDeviceTokenObtainPairView,
+    TrustedDeviceTokenRefreshView,
+    TrustedDeviceTokenVerifyView,
+)
+
+urlpatterns = [
+    path('api/token/', TrustedDeviceTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TrustedDeviceTokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify/', TrustedDeviceTokenVerifyView.as_view(), name='token_verify'),
+]
+```
+
+---
+
+### 📡 Device Management API
+
+Use the provided `TrustedDeviceViewSet`:
+
+```python
+from trusted_devices.views import TrustedDeviceViewSet
+
+router.register(r'trusted-devices', TrustedDeviceViewSet, basename='trusted-device')
+```
+
+Endpoints:
+
+* `GET /trusted-devices` — List all trusted devices
+* `DELETE /trusted-devices/{device_uid}` — Delete a device
+* `PATCH /trusted-devices/{device_uid}` — Update device permissions
+
+---
+
+## 👤 Device Model
+
+Each trusted device includes:
+
+* `device_uid`: Unique UUID
+* `user_agent`: Browser or device string
+* `ip_address`: IP address
+* `country`, `region`, `city`: Geolocation (via `ipapi.co`)
+* `last_seen`, `created_at`: Timestamps
+* `can_delete_other_devices`, `can_update_other_devices`: Optional privileges
+
+---
+
+## 🧠 How It Works
+
+1. During login, a `device_uid` is generated and embedded in the token.
+2. Clients use that token (with `device_uid`) for refresh/verify.
+3. Each request is linked to a known device.
+4. Users can manage or restrict their devices via API or Admin.
+
+---
+
+## 🧪 Testing Locally
+
+```bash
+# 🧩 Create and activate a uv-managed virtual environment
 uv venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 
-# Install dependencies with dev tools
+# 📦 Install the package in editable mode with dev extras
 uv pip install -e ".[dev]"
+
+# 🧪 Run the test suite
+pytest
 ```
 
 ---
 
-### 4. Start Coding 🧑‍💻
+## 🧱 Dependencies
 
-Implement your Django package inside the `src/your_package_name/` directory.
-
-```text
-src/
-└── your_package_name/
-    ├── __init__.py
-    ├── apps.py
-    ├── models.py
-    ├── views.py
-    ├── urls.py
-    ├── admin.py
-    ├── templates/
-    └── static/
-```
+* Django
+* Django REST Framework
+* djangorestframework-simplejwt
+* [ipapi.co](https://ipapi.co) (for IP geolocation)
 
 ---
 
-### 5. Use the Makefile 🛠️
+## 🗃️ Model Snapshot
 
-```bash
-make install     # Install the package with dev dependencies
-make test        # Run tests with pytest
-make lint        # Lint with flake8, isort, black
-make coverage    # Run tests with coverage
-make dist        # Build a distributable package
-make clean       # Clean build artifacts
-```
-
----
-
-## ✅ GitHub Actions: CI/CD
-
-This template comes with GitHub Actions for:
-
-* Running tests and linting on pushes and PRs
-* Publishing to PyPI on version tag push (e.g., `v0.1.0`)
-
-### 🔐 PyPI Configuration
-
-1. Go to your GitHub repo → Settings → Secrets → Actions
-2. Add:
-
-    * `PYPI_USERNAME`
-    * `PYPI_PASSWORD`
-
-### 🚢 Release
-
-```bash
-git tag -a v0.1.0 -m "Initial release"
-git push origin v0.1.0
-```
+| Field                      | Purpose             |
+| -------------------------- | ------------------- |
+| `device_uid`               | UUID primary key    |
+| `user_agent`, `ip_address` | Device fingerprint  |
+| `country / region / city`  | Geo‑lookup          |
+| `last_seen / created_at`   | Activity timestamps |
+| `can_update_other_devices` | Granular permission |
+| `can_delete_other_devices` | Granular permission |
 
 ---
 
-## 🧪 Project Structure
+## 🤝 Collaboration & Contributing
 
-```text
-django-package-template/
-├── .github/workflows/    # GitHub Actions
-├── src/your_package/     # Your Django app/package
-├── tests/                # Unit tests
-├── pyproject.toml        # Project metadata and dependencies
-├── Makefile              # Common development tasks
-├── LICENSE               # MIT License
-├── README.md             # This file
-└── .gitignore
-```
+We love community contributions! To collaborate:
+
+1. **Fork** the repo and create a feature branch:
+
+   ```bash
+   git checkout -b feature/my-amazing-idea
+   ```
+
+2. **Follow code style** – run:
+
+   ```bash
+   make lint  # runs flake8, isort, black
+   ```
+
+3. **Write & run tests**:
+
+   ```bash
+   pytest
+   ```
+
+4. **Commit** with clear messages and open a **Pull Request**.
+   GitHub Actions will lint + test your branch automatically.
 
 ---
 
-## 🤝 Contributing
+### 🗣️ Discussions & Issues
 
-Got improvements?
+* 💡 Questions / ideas → [GitHub Discussions](https://github.com/ganiyevuz/django-trusted-devices/discussions)
+* 🐛 Bugs / feature requests → [GitHub Issues](https://github.com/ganiyevuz/django-trusted-devices/issues)
 
-```bash
-git checkout -b feature/my-feature
-git commit -m "Add my feature"
-git push origin feature/my-feature
-```
+---
 
-Then open a Pull Request 🧷
+### 🛠 Maintainer Workflow
+
+* PRs require at least one approval and passing CI
+* We **squash‑merge** to keep history clean
+* Follows **Semantic Versioning** (`MAJOR.MINOR.PATCH`), tagged as `vX.Y.Z`
 
 ---
 
 ## 📄 License
 
-Licensed under the MIT License. See [LICENSE](LICENSE) for details.
+[MIT](LICENSE)
 
+---
+
+Made with ❤️ by [Jahongir Ganiev](https://github.com/ganiyevuz)
+Security questions or commercial support? Open an issue or email **[contact@jakhongir.dev](mailto:contact@jakhongir.dev)**
