@@ -5,6 +5,8 @@ A plug-and-play Django app that adds **trusted device management** to your API a
 and enables per-device control over access and session management.
 
 ---
+[![Docs](https://img.shields.io/badge/docs-view-green?style=for-the-badge&logo=readthedocs)](https://ganiyevuz.github.io/django-trusted-devices/)
+
 
 ## 🚀 Features
 
@@ -60,6 +62,31 @@ TRUSTED_DEVICE = {
 ---
 
 ## 🧩 Usage
+
+
+## 🔐 SimpleJWT configuration
+
+Replace default SimpleJWT serializers with TrustedDevice serializers.:
+
+```python
+from datetime import timedelta
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'trusted_devices.authentication.TrustedDeviceAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "TOKEN_OBTAIN_SERIALIZER": 'trusted_devices.serializers.TrustedDeviceTokenObtainPairSerializer',
+    "TOKEN_REFRESH_SERIALIZER": 'trusted_devices.serializers.TrustedDeviceTokenRefreshSerializer',
+    "TOKEN_VERIFY_SERIALIZER": 'trusted_devices.serializers.TrustedDeviceTokenVerifySerializer',
+}
+
+```
 
 ### 🔐 Custom Token Views
 

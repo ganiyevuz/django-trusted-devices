@@ -1,0 +1,35 @@
+site_name: Django Trusted Device
+site_url: https://ganiyevuz.github.io/django-trusted-devices
+repo_url: https://github.com/ganiyevuz/django-trusted-devices
+repo_name: ganiyevuz/django-trusted-devices
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - content.code.copy
+    - content.action.edit
+  palette:
+    scheme: slate
+    primary: deep purple
+    accent: deep orange
+
+nav:
+  - Home: index.md
+  - Usage: usage.md
+  - API Reference: api.md
+  - Contributing: contributing.md
+  - License: license.md
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - codehilite
+  - footnotes
+  - pymdownx.superfences
+  - pymdownx.tabbed
+
+edit_uri: edit/main/docs/

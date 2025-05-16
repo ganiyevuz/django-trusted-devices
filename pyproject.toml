@@ -34,7 +34,9 @@ dependencies = [
     "httpx>=0.28.1",
 ]
 
+
 [project.optional-dependencies]
+docs = ["mkdocs", "mkdocs-material"]
 dev = [
     "black>=25.1.0",
     "build>=1.2.2.post1",
@@ -45,6 +47,10 @@ dev = [
     "pytest-django>=4.11.1",
     "twine>=6.1.0",
 ]
+
+[tool.mkdcos-gh-deploy]
+remote = "origin"
+branch = "gh-pages"
 
 [tool.setuptools]
 packages = { find = { where = ["src"] } }

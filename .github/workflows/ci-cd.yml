@@ -2,11 +2,11 @@ name: 🚀 Django Package CI/CD
 
 on:
   push:
-    branches: [ branch ]      # Change to your branch
+    branches: [main]
     tags:
-      - 'v*'              # Publish only on version tags like 'v0.1.0'
+      - 'v*'  # Trigger PyPI publish on version tags like 'v0.1.0'
   pull_request:
-    branches: [ branch ]
+    branches: [main]
 
 env:
   PYTHON_VERSION: "3.12"
@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        django-version: [ '5.2' ]
+        django-version: ['5.2']
 
     steps:
       - name: 📥 Checkout Code
@@ -29,7 +29,7 @@ jobs:
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
-      - name: 🐍 Setup Python & venv
+      - name: 🐍 Setup Python & Create Virtualenv
         run: |
           uv python install ${{ env.PYTHON_VERSION }}
           uv venv
@@ -60,13 +60,13 @@ jobs:
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
-      - name: 🐍 Setup Python & venv
+      - name: 🐍 Setup Python & Create Virtualenv
         run: |
           uv python install ${{ env.PYTHON_VERSION }}
           uv venv
 
       - name: 📦 Install Build Tools
-        run: uv install build twine
+        run: uv pip install build twine
 
       - name: 🚀 Build & Publish to PyPI
         env:
