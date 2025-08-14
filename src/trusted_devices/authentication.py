@@ -46,7 +46,7 @@ class TrustedDeviceAuthentication(JWTAuthentication):
 
                 # If token expired, and device_uid exists — delete that device
                 if exp and datetime.fromtimestamp(exp, dt_timezone.utc) < datetime.now(
-                        dt_timezone.utc
+                    dt_timezone.utc
                 ):
                     if device_uid:
                         TrustedDevice.objects.filter(device_uid=device_uid).delete()

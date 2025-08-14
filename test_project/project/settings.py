@@ -92,21 +92,21 @@ SIMPLE_JWT = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Django Trusted Devices API',
-    'DESCRIPTION': 'Secure and manage trusted login devices for Django users',
-    'VERSION': '1.2',
+    "TITLE": "Django Trusted Devices API",
+    "DESCRIPTION": "Secure and manage trusted login devices for Django users",
+    "VERSION": "1.2",
     "SERVE_INCLUDE_SCHEMA": False,
     "COMPONENT_SPLIT_REQUEST": True,
     "SORT_OPERATION_PARAMETERS": True,
     "SCHEMA_PATH_PREFIX": r"/api/v[0-9]/[a-zA-Z0-9\-\_]+",
     # 'SCHEMA_PATH_PREFIX_TRIM': True,
     "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
-    'SWAGGER_UI_SETTINGS': {
-        'deepLinking': True,
-        'persistAuthorization': True,
-        'displayOperationId': True,
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
     },
-    'SECURITY': [{'Bearer': []}],
+    "SECURITY": [{"Bearer": []}],
     "AUTHENTICATION": [
         {
             "name": "Session",

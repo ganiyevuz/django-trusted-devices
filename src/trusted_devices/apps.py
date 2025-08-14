@@ -7,4 +7,4 @@ class TrustedDevicesConfig(AppConfig):
 
     def ready(self):
         from . import signals  # noqa
-        import trusted_devices.schema
+        import trusted_devices.schema  # noqa
