@@ -79,11 +79,17 @@ class TrustedDevice(Model):
 
     can_update_other_devices = BooleanField(
         default=True,
-        help_text="Whether this device can update settings for other devices.",
+        help_text=(
+            "Whether this device can update settings for other devices. "
+            "Override default via TRUSTED_DEVICE['DEFAULT_CAN_UPDATE_OTHER_DEVICES']."
+        ),
     )
     can_delete_other_devices = BooleanField(
         default=True,
-        help_text="Whether this device can delete other devices.",
+        help_text=(
+            "Whether this device can delete other devices. "
+            "Override default via TRUSTED_DEVICE['DEFAULT_CAN_DELETE_OTHER_DEVICES']."
+        ),
     )
 
     def __str__(self):

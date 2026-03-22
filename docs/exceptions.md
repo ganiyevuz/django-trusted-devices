@@ -32,6 +32,8 @@ Extends `rest_framework.exceptions.ValidationError`.
 | `DeviceLacksDeletePermission` | `device_lacks_delete_permission` | Your current device does not have permission to delete other sessions. |
 | `DeviceLacksEditPermission` | `device_lacks_edit_permission` | Your current device does not have permission to modify other sessions. |
 | `DeviceSessionTooRecent` | `device_session_too_recent` | This session is too recent to be {action}. Try again after {duration} from creation. |
+| `DeviceSelfModification` | `device_self_modification` | You cannot modify or delete your current device this way. Use the logout endpoint. |
+| `DevicePermissionEscalation` | `device_permission_escalation` | You cannot grant permissions that your current device does not have. |
 
 These extend `rest_framework.exceptions.PermissionDenied`.
 

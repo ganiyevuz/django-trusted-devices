@@ -132,7 +132,7 @@ Returns all trusted devices for the authenticated user.
 
 ### `PATCH /trusted-devices/{device_uid}` — Update Device
 
-Update a device's name and permission flags.
+Update a device's name and permission flags. You cannot modify your own device (use `/logout` to revoke your session). You also cannot grant permissions that your current device doesn't have (escalation prevention).
 
 **Request:**
 
@@ -158,16 +158,18 @@ Update a device's name and permission flags.
 
 | Code | Error | Description |
 |------|-------|-------------|
+| `403` | `device_self_modification` | Cannot modify your own device |
 | `403` | `device_editing_disabled` | Global editing is turned off |
 | `403` | `device_not_verified` | Current device not verified |
 | `403` | `device_lacks_edit_permission` | Current device can't edit others |
+| `403` | `device_permission_escalation` | Granting permissions you don't have |
 | `403` | `device_session_too_recent` | Target device is within delay window |
 
 ---
 
 ### `DELETE /trusted-devices/{device_uid}` — Delete Device
 
-Revoke a specific device session.
+Revoke a specific device session. You cannot delete your own device (use `/logout` instead).
 
 **Response `204`:** No content.
 
@@ -175,6 +177,7 @@ Revoke a specific device session.
 
 | Code | Error | Description |
 |------|-------|-------------|
+| `403` | `device_self_modification` | Cannot delete your own device (use `/logout`) |
 | `403` | `device_deletion_disabled` | Global deletion is turned off |
 | `403` | `device_not_verified` | Current device not verified |
 | `403` | `device_lacks_delete_permission` | Current device can't delete others |

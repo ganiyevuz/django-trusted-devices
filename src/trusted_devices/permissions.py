@@ -9,6 +9,7 @@ from trusted_devices.exceptions import (
     DeviceLacksDeletePermission,
     DeviceLacksEditPermission,
     DeviceNotVerified,
+    DeviceSelfModification,
     DeviceSessionTooRecent,
 )
 from trusted_devices.models import TrustedDevice
@@ -35,20 +36,24 @@ class TrustedDevicePermission(BasePermission):
 class DeletableTrustedDevicePermission(BasePermission):
     """
     Allows deletion of trusted devices under these conditions:
+    - Target device is not the current device (use /logout instead).
     - Global delete setting is enabled.
     - Current device has permission to delete others.
     - Target device is older than the allowed delay period.
     """
 
     def has_object_permission(self, request, view, obj: TrustedDevice):
-        if not trusted_device_settings.ALLOW_GLOBAL_DELETE:
-            raise DeviceDeletionDisabled()
-
         current_device: TrustedDevice = getattr(
             request.user, "current_trusted_device", None
         )
         if not current_device:
             raise DeviceNotVerified()
+
+        if obj.device_uid == current_device.device_uid:
+            raise DeviceSelfModification()
+
+        if not trusted_device_settings.ALLOW_GLOBAL_DELETE:
+            raise DeviceDeletionDisabled()
 
         if not current_device.can_delete_other_devices:
             raise DeviceLacksDeletePermission()
@@ -68,20 +73,24 @@ class DeletableTrustedDevicePermission(BasePermission):
 class EditableTrustedDevicePermission(BasePermission):
     """
     Allows editing trusted devices under these conditions:
+    - Target device is not the current device.
     - Global update setting is enabled.
     - Current device has permission to update others.
     - Target device is older than the allowed delay period.
     """
 
     def has_object_permission(self, request, view, obj: TrustedDevice):
-        if not trusted_device_settings.ALLOW_GLOBAL_UPDATE:
-            raise DeviceEditingDisabled()
-
         current_device: TrustedDevice = getattr(
             request.user, "current_trusted_device", None
         )
         if not current_device:
             raise DeviceNotVerified()
+
+        if obj.device_uid == current_device.device_uid:
+            raise DeviceSelfModification()
+
+        if not trusted_device_settings.ALLOW_GLOBAL_UPDATE:
+            raise DeviceEditingDisabled()
 
         if not current_device.can_update_other_devices:
             raise DeviceLacksEditPermission()

@@ -8,6 +8,8 @@ _TRUSTED_DEVICE_DEFAULTS = {
     "ALLOW_GLOBAL_UPDATE": True,
     "MAX_DEVICES_PER_USER": None,
     "GEOLOCATION_BACKEND": "trusted_devices.utils.get_location_data",
+    "DEFAULT_CAN_UPDATE_OTHER_DEVICES": True,
+    "DEFAULT_CAN_DELETE_OTHER_DEVICES": True,
 }
 
 

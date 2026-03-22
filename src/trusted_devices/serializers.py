@@ -62,6 +62,24 @@ class TrustedDeviceUpdateSerializer(ModelSerializer):
         model = TrustedDevice
         fields = ["name", "can_delete_other_devices", "can_update_other_devices"]
 
+    def validate(self, attrs):
+        from trusted_devices.exceptions import DevicePermissionEscalation
+
+        request = self.context.get("request")
+        if not request or not hasattr(request.user, "current_trusted_device"):
+            return attrs
+
+        current_device = request.user.current_trusted_device
+
+        # Prevent escalation: can't grant permissions you don't have
+        if attrs.get("can_delete_other_devices") and not current_device.can_delete_other_devices:
+            raise DevicePermissionEscalation()
+
+        if attrs.get("can_update_other_devices") and not current_device.can_update_other_devices:
+            raise DevicePermissionEscalation()
+
+        return attrs
+
 
 class TrustedDeviceTokenObtainPairSerializer(TokenObtainPairSerializer):
     """
@@ -100,6 +118,8 @@ class TrustedDeviceTokenObtainPairSerializer(TokenObtainPairSerializer):
             country=location_data.get("country"),
             region=location_data.get("region"),
             city=location_data.get("city"),
+            can_update_other_devices=trusted_device_settings.DEFAULT_CAN_UPDATE_OTHER_DEVICES,
+            can_delete_other_devices=trusted_device_settings.DEFAULT_CAN_DELETE_OTHER_DEVICES,
         )
 
         # Clean up stale devices whose refresh tokens have expired

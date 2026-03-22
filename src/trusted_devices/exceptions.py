@@ -66,3 +66,18 @@ class DeviceSessionTooRecent(PermissionDenied):
 class DeviceNotVerified(PermissionDenied):
     default_detail = "Your current session could not be verified as a trusted device."
     default_code = "device_not_verified"
+
+
+class DeviceSelfModification(PermissionDenied):
+    default_detail = (
+        "You cannot modify or delete your current device this way. "
+        "Use the logout endpoint to revoke your own session."
+    )
+    default_code = "device_self_modification"
+
+
+class DevicePermissionEscalation(PermissionDenied):
+    default_detail = (
+        "You cannot grant permissions that your current device does not have."
+    )
+    default_code = "device_permission_escalation"

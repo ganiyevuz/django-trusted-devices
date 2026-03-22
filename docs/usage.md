@@ -99,6 +99,8 @@ TRUSTED_DEVICE = {
     "ALLOW_GLOBAL_UPDATE": True,           # Enable/disable device editing globally
     "MAX_DEVICES_PER_USER": None,          # None = unlimited, or set e.g. 5
     "GEOLOCATION_BACKEND": "trusted_devices.utils.get_location_data",
+    "DEFAULT_CAN_UPDATE_OTHER_DEVICES": True,   # Default perm for new devices
+    "DEFAULT_CAN_DELETE_OTHER_DEVICES": True,   # Default perm for new devices
 }
 ```
 
@@ -112,6 +114,8 @@ TRUSTED_DEVICE = {
 | `ALLOW_GLOBAL_UPDATE` | `True` | Master switch for device editing |
 | `MAX_DEVICES_PER_USER` | `None` | Max active devices per user. Oldest evicted on new login |
 | `GEOLOCATION_BACKEND` | `"trusted_devices.utils.get_location_data"` | Dotted path to geolocation function |
+| `DEFAULT_CAN_UPDATE_OTHER_DEVICES` | `True` | Default update permission for newly created devices |
+| `DEFAULT_CAN_DELETE_OTHER_DEVICES` | `True` | Default delete permission for newly created devices |
 
 ---
 
