@@ -1,4 +1,4 @@
-site_name: Django Trusted Device
+site_name: Django Trusted Devices
 site_url: https://ganiyevuz.github.io/django-trusted-devices
 repo_url: https://github.com/ganiyevuz/django-trusted-devices
 repo_name: ganiyevuz/django-trusted-devices
@@ -20,6 +20,9 @@ nav:
   - Home: index.md
   - Usage: usage.md
   - API Reference: api.md
+  - Signals: signals.md
+  - Exceptions: exceptions.md
+  - Geolocation: geolocation.md
   - Contributing: contributing.md
   - License: license.md
 

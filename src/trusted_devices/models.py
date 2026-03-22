@@ -36,6 +36,12 @@ class TrustedDevice(Model):
         related_name="trusted_devices",
         help_text="The user to whom this device belongs.",
     )
+    name = CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        help_text="User-defined label for this device (e.g. 'Work Laptop').",
+    )
     user_agent = TextField(
         help_text="User agent string of the browser or app used for login."
     )
@@ -81,7 +87,8 @@ class TrustedDevice(Model):
     )
 
     def __str__(self):
-        return f"{self.user} — {self.device_uid}"
+        label = self.name or str(self.device_uid)
+        return f"{self.user} — {label}"
 
     class Meta:
         verbose_name = "Trusted Device"
@@ -90,11 +97,3 @@ class TrustedDevice(Model):
         indexes = [
             Index(fields=["user"]),
         ]
-
-
-# class TrustedDeviceToken(Model):
-#     device = ForeignKey(TrustedDevice, on_delete=CASCADE)
-#     token = CharField(max_length=255, unique=True)
-#     is_active = BooleanField(default=True)
-#     created_at = DateTimeField(auto_now_add=True)
-#     expires_at = DateTimeField()

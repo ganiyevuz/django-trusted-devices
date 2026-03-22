@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django-trusted-devices"
-version = "v1.3"
+version = "1.4"
 description = "Secure and manage trusted login devices for Django users"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -49,7 +49,7 @@ dev = [
     "twine>=6.1.0",
 ]
 
-[tool.mkdcos-gh-deploy]
+[tool.mkdocs-gh-deploy]
 remote = "origin"
 branch = "gh-pages"
 
