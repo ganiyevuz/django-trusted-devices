@@ -5,6 +5,7 @@ repo_name: ganiyevuz/django-trusted-devices
 
 theme:
   name: material
+  custom_dir: docs/overrides
   features:
     - navigation.instant
     - navigation.tracking
