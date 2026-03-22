@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+  {{ super() }}
+  <script
+    src="https://context7.com/widget.js"
+    data-library="/ganiyevuz/django-trusted-devices"
+    data-color="#7c4dff"
+    data-position="bottom-right"
+    data-placeholder="Ask about Django Trusted Devices..."
+    async
+  ></script>
+{% endblock %}
