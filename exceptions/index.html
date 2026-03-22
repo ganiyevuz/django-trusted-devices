@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://ganiyevuz.github.io/django-trusted-devices/contributing/">
+        <link rel="canonical" href="https://ganiyevuz.github.io/django-trusted-devices/exceptions/">
       
       
-        <link rel="prev" href="../geolocation/">
+        <link rel="prev" href="../signals/">
       
       
-        <link rel="next" href="../license/">
+        <link rel="next" href="../geolocation/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Contributing - Django Trusted Devices</title>
+        <title>Exceptions - Django Trusted Devices</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#contributing" class="md-skip">
+        <a href="#exceptions" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Contributing
+              Exceptions
             
           </span>
         </div>
@@ -335,10 +335,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../exceptions/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exceptions
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -354,6 +381,120 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#exception-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exception Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exception Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authentication-errors-http-401" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Errors (HTTP 401)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation-errors-http-400" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation Errors (HTTP 400)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#permission-errors-http-403" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Permission Errors (HTTP 403)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-response-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Response Format
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#catching-specific-exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Catching Specific Exceptions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-exception-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Exception Handler
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -389,37 +530,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Contributing
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
         
   
   
@@ -435,48 +549,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#steps-to-contribute" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        👣 Steps to Contribute
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#local-setup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🧪 Local Setup
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -535,10 +607,71 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#steps-to-contribute" class="md-nav__link">
+  <a href="#exception-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        👣 Steps to Contribute
+        Exception Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exception Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authentication-errors-http-401" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Errors (HTTP 401)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation-errors-http-400" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation Errors (HTTP 400)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#permission-errors-http-403" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Permission Errors (HTTP 403)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-response-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Response Format
       
     </span>
   </a>
@@ -546,10 +679,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#local-setup" class="md-nav__link">
+  <a href="#catching-specific-exceptions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🧪 Local Setup
+        Catching Specific Exceptions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-exception-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Exception Handler
       
     </span>
   </a>
@@ -573,7 +717,7 @@
 
 
   
-    <a href="https://github.com/ganiyevuz/django-trusted-devices/edit/main/docs/contributing.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/ganiyevuz/django-trusted-devices/edit/main/docs/exceptions.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -581,33 +725,163 @@
   
 
 
-<h1 id="contributing">🤝 Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h1>
-<h2 id="steps-to-contribute">👣 Steps to Contribute<a class="headerlink" href="#steps-to-contribute" title="Permanent link">&para;</a></h2>
-<ol>
-<li>Fork and branch:</li>
-</ol>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/my-change
-<span class="sb">````</span>
-
-<span class="m">2</span>.<span class="w"> </span>Format<span class="w"> </span>and<span class="w"> </span>lint:
-
-<span class="sb">```</span>bash
-make<span class="w"> </span>lint
-</code></pre></div>
-<ol>
-<li>Test:</li>
-</ol>
-<div class="highlight"><pre><span></span><code>pytest
-</code></pre></div>
-<ol>
-<li>Open a Pull Request!</li>
-</ol>
+<h1 id="exceptions">⚠️ Exceptions<a class="headerlink" href="#exceptions" title="Permanent link">&para;</a></h1>
+<p>All exceptions are importable from <code>trusted_devices.exceptions</code>. They extend DRF's built-in exception classes, so they are automatically handled by DRF's exception handler and return proper JSON error responses.</p>
+<h2 id="exception-reference">Exception Reference<a class="headerlink" href="#exception-reference" title="Permanent link">&para;</a></h2>
+<h3 id="authentication-errors-http-401">Authentication Errors (HTTP 401)<a class="headerlink" href="#authentication-errors-http-401" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Exception</th>
+<th>Code</th>
+<th>Default Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DeviceUIDMissing</code></td>
+<td><code>device_uid_missing</code></td>
+<td>Device UID not found in token.</td>
+</tr>
+<tr>
+<td><code>DeviceNotRecognized</code></td>
+<td><code>device_not_recognized</code></td>
+<td>This session device is no longer valid.</td>
+</tr>
+<tr>
+<td><code>InactiveAccount</code></td>
+<td><code>inactive_account</code></td>
+<td>User account is inactive.</td>
+</tr>
+</tbody>
+</table>
+<p>These extend <code>rest_framework.exceptions.AuthenticationFailed</code>.</p>
+<h3 id="validation-errors-http-400">Validation Errors (HTTP 400)<a class="headerlink" href="#validation-errors-http-400" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Exception</th>
+<th>Code</th>
+<th>Default Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TokenBlacklisted</code></td>
+<td><code>token_blacklisted</code></td>
+<td>Token has been blacklisted.</td>
+</tr>
+</tbody>
+</table>
+<p>Extends <code>rest_framework.exceptions.ValidationError</code>.</p>
+<h3 id="permission-errors-http-403">Permission Errors (HTTP 403)<a class="headerlink" href="#permission-errors-http-403" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Exception</th>
+<th>Code</th>
+<th>Default Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DeviceNotVerified</code></td>
+<td><code>device_not_verified</code></td>
+<td>Your current session could not be verified as a trusted device.</td>
+</tr>
+<tr>
+<td><code>DeviceDeletionDisabled</code></td>
+<td><code>device_deletion_disabled</code></td>
+<td>Device deletion is globally disabled by the system administrator.</td>
+</tr>
+<tr>
+<td><code>DeviceEditingDisabled</code></td>
+<td><code>device_editing_disabled</code></td>
+<td>Device editing is globally disabled by the system administrator.</td>
+</tr>
+<tr>
+<td><code>DeviceLacksDeletePermission</code></td>
+<td><code>device_lacks_delete_permission</code></td>
+<td>Your current device does not have permission to delete other sessions.</td>
+</tr>
+<tr>
+<td><code>DeviceLacksEditPermission</code></td>
+<td><code>device_lacks_edit_permission</code></td>
+<td>Your current device does not have permission to modify other sessions.</td>
+</tr>
+<tr>
+<td><code>DeviceSessionTooRecent</code></td>
+<td><code>device_session_too_recent</code></td>
+<td>This session is too recent to be {action}. Try again after {duration} from creation.</td>
+</tr>
+<tr>
+<td><code>DeviceSelfModification</code></td>
+<td><code>device_self_modification</code></td>
+<td>You cannot modify or delete your current device this way. Use the logout endpoint.</td>
+</tr>
+<tr>
+<td><code>DevicePermissionEscalation</code></td>
+<td><code>device_permission_escalation</code></td>
+<td>You cannot grant permissions that your current device does not have.</td>
+</tr>
+</tbody>
+</table>
+<p>These extend <code>rest_framework.exceptions.PermissionDenied</code>.</p>
+<h3 id="configuration-errors">Configuration Errors<a class="headerlink" href="#configuration-errors" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Exception</th>
+<th>Base Class</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>InvalidGeolocationBackend</code></td>
+<td><code>django.core.exceptions.ImproperlyConfigured</code></td>
+<td><code>GEOLOCATION_BACKEND</code> setting is misconfigured</td>
+</tr>
+</tbody>
+</table>
+<p>This is raised at startup/first use, not during API requests.</p>
 <hr />
-<h2 id="local-setup">🧪 Local Setup<a class="headerlink" href="#local-setup" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>venv
-<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
-pytest
+<h2 id="error-response-format">Error Response Format<a class="headerlink" href="#error-response-format" title="Permanent link">&para;</a></h2>
+<p>All API errors follow DRF's standard format:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;This session device is no longer valid.&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;device_not_recognized&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The <code>code</code> field is stable across versions — use it for programmatic error handling instead of matching on the message string.</p>
+<hr />
+<h2 id="catching-specific-exceptions">Catching Specific Exceptions<a class="headerlink" href="#catching-specific-exceptions" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">trusted_devices.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeviceNotRecognized</span><span class="p">,</span> <span class="n">InactiveAccount</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># ... authenticate or make API call</span>
+    <span class="k">pass</span>
+<span class="k">except</span> <span class="n">DeviceNotRecognized</span><span class="p">:</span>
+    <span class="c1"># Device was revoked — redirect to login</span>
+    <span class="k">pass</span>
+<span class="k">except</span> <span class="n">InactiveAccount</span><span class="p">:</span>
+    <span class="c1"># User account was disabled — show specific message</span>
+    <span class="k">pass</span>
+</code></pre></div>
+<hr />
+<h2 id="custom-exception-handler">Custom Exception Handler<a class="headerlink" href="#custom-exception-handler" title="Permanent link">&para;</a></h2>
+<p>You can extend DRF's exception handler to add custom behavior for trusted device errors:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">rest_framework.views</span><span class="w"> </span><span class="kn">import</span> <span class="n">exception_handler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">trusted_devices.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeviceNotRecognized</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">custom_exception_handler</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">exception_handler</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">DeviceNotRecognized</span><span class="p">):</span>
+        <span class="c1"># Add a custom header to signal the client to re-authenticate</span>
+        <span class="n">response</span><span class="p">[</span><span class="s1">&#39;X-Device-Revoked&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;true&#39;</span>
+
+    <span class="k">return</span> <span class="n">response</span>
 </code></pre></div>
 
 

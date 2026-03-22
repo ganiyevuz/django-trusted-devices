@@ -2,22 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://ganiyevuz.github.io/django-trusted-devices/</loc>
-         <lastmod>2025-05-16</lastmod>
+         <lastmod>2026-03-22</lastmod>
     </url>
     <url>
          <loc>https://ganiyevuz.github.io/django-trusted-devices/api/</loc>
-         <lastmod>2025-05-16</lastmod>
+         <lastmod>2026-03-22</lastmod>
     </url>
     <url>
          <loc>https://ganiyevuz.github.io/django-trusted-devices/contributing/</loc>
-         <lastmod>2025-05-16</lastmod>
+         <lastmod>2026-03-22</lastmod>
+    </url>
+    <url>
+         <loc>https://ganiyevuz.github.io/django-trusted-devices/exceptions/</loc>
+         <lastmod>2026-03-22</lastmod>
+    </url>
+    <url>
+         <loc>https://ganiyevuz.github.io/django-trusted-devices/geolocation/</loc>
+         <lastmod>2026-03-22</lastmod>
     </url>
     <url>
          <loc>https://ganiyevuz.github.io/django-trusted-devices/license/</loc>
-         <lastmod>2025-05-16</lastmod>
+         <lastmod>2026-03-22</lastmod>
+    </url>
+    <url>
+         <loc>https://ganiyevuz.github.io/django-trusted-devices/signals/</loc>
+         <lastmod>2026-03-22</lastmod>
     </url>
     <url>
          <loc>https://ganiyevuz.github.io/django-trusted-devices/usage/</loc>
-         <lastmod>2025-05-16</lastmod>
+         <lastmod>2026-03-22</lastmod>
     </url>
 </urlset>

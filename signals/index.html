@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://ganiyevuz.github.io/django-trusted-devices/contributing/">
+        <link rel="canonical" href="https://ganiyevuz.github.io/django-trusted-devices/signals/">
       
       
-        <link rel="prev" href="../geolocation/">
+        <link rel="prev" href="../api/">
       
       
-        <link rel="next" href="../license/">
+        <link rel="next" href="../exceptions/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Contributing - Django Trusted Devices</title>
+        <title>Signals - Django Trusted Devices</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#contributing" class="md-skip">
+        <a href="#signals" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Contributing
+              Signals
             
           </span>
         </div>
@@ -308,10 +308,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../signals/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Signals
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -327,6 +354,98 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#available-signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available Signals
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Signals">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#device_created" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        device_created
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#device_revoked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        device_revoked
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suspicious_login" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        suspicious_login
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-signals-fire" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When Signals Fire
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registering-signal-handlers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registering Signal Handlers
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -389,37 +508,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Contributing
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
         
   
   
@@ -435,48 +527,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#steps-to-contribute" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        👣 Steps to Contribute
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#local-setup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🧪 Local Setup
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -535,10 +585,60 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#steps-to-contribute" class="md-nav__link">
+  <a href="#available-signals" class="md-nav__link">
     <span class="md-ellipsis">
       
-        👣 Steps to Contribute
+        Available Signals
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Signals">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#device_created" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        device_created
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#device_revoked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        device_revoked
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suspicious_login" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        suspicious_login
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-signals-fire" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When Signals Fire
       
     </span>
   </a>
@@ -546,10 +646,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#local-setup" class="md-nav__link">
+  <a href="#registering-signal-handlers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🧪 Local Setup
+        Registering Signal Handlers
       
     </span>
   </a>
@@ -573,7 +673,7 @@
 
 
   
-    <a href="https://github.com/ganiyevuz/django-trusted-devices/edit/main/docs/contributing.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/ganiyevuz/django-trusted-devices/edit/main/docs/signals.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -581,33 +681,177 @@
   
 
 
-<h1 id="contributing">🤝 Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h1>
-<h2 id="steps-to-contribute">👣 Steps to Contribute<a class="headerlink" href="#steps-to-contribute" title="Permanent link">&para;</a></h2>
-<ol>
-<li>Fork and branch:</li>
-</ol>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/my-change
-<span class="sb">````</span>
+<h1 id="signals">🚨 Signals<a class="headerlink" href="#signals" title="Permanent link">&para;</a></h1>
+<p>Django Trusted Devices provides custom signals for device lifecycle events. Connect to these in your app to trigger notifications, audit logs, or security responses.</p>
+<h2 id="available-signals">Available Signals<a class="headerlink" href="#available-signals" title="Permanent link">&para;</a></h2>
+<h3 id="device_created"><code>device_created</code><a class="headerlink" href="#device_created" title="Permanent link">&para;</a></h3>
+<p>Fired when a new device is registered (on login).</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sender</code></td>
+<td><code>TrustedDevice</code></td>
+<td>The model class</td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td><code>User</code></td>
+<td>The user who logged in</td>
+</tr>
+<tr>
+<td><code>device</code></td>
+<td><code>TrustedDevice</code></td>
+<td>The newly created device instance</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.dispatch</span><span class="w"> </span><span class="kn">import</span> <span class="n">receiver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">trusted_devices.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">device_created</span>
 
-<span class="m">2</span>.<span class="w"> </span>Format<span class="w"> </span>and<span class="w"> </span>lint:
-
-<span class="sb">```</span>bash
-make<span class="w"> </span>lint
+<span class="nd">@receiver</span><span class="p">(</span><span class="n">device_created</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_new_device</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">send_push_notification</span><span class="p">(</span>
+        <span class="n">user</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;New login from </span><span class="si">{</span><span class="n">device</span><span class="o">.</span><span class="n">city</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">device</span><span class="o">.</span><span class="n">country</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
 </code></pre></div>
-<ol>
-<li>Test:</li>
-</ol>
-<div class="highlight"><pre><span></span><code>pytest
-</code></pre></div>
-<ol>
-<li>Open a Pull Request!</li>
-</ol>
 <hr />
-<h2 id="local-setup">🧪 Local Setup<a class="headerlink" href="#local-setup" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>venv
-<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
-pytest
+<h3 id="device_revoked"><code>device_revoked</code><a class="headerlink" href="#device_revoked" title="Permanent link">&para;</a></h3>
+<p>Fired when a device is deleted (via API, cleanup, eviction, or logout).</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sender</code></td>
+<td><code>TrustedDevice</code></td>
+<td>The model class</td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td><code>User</code></td>
+<td>The device owner</td>
+</tr>
+<tr>
+<td><code>device_uid</code></td>
+<td><code>UUID</code></td>
+<td>The UID of the deleted device</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.dispatch</span><span class="w"> </span><span class="kn">import</span> <span class="n">receiver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">trusted_devices.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">device_revoked</span>
+
+<span class="nd">@receiver</span><span class="p">(</span><span class="n">device_revoked</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_device_removed</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">device_uid</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">audit_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Device </span><span class="si">{</span><span class="n">device_uid</span><span class="si">}</span><span class="s2"> revoked for user </span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">pk</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h3 id="suspicious_login"><code>suspicious_login</code><a class="headerlink" href="#suspicious_login" title="Permanent link">&para;</a></h3>
+<p>Fired when a new device logs in from a country not seen in the user's existing devices.</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sender</code></td>
+<td><code>TrustedDevice</code></td>
+<td>The model class</td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td><code>User</code></td>
+<td>The user who logged in</td>
+</tr>
+<tr>
+<td><code>device</code></td>
+<td><code>TrustedDevice</code></td>
+<td>The new device from an unknown country</td>
+</tr>
+<tr>
+<td><code>previous_countries</code></td>
+<td><code>set[str]</code></td>
+<td>Countries from the user's existing devices</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.dispatch</span><span class="w"> </span><span class="kn">import</span> <span class="n">receiver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">trusted_devices.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">suspicious_login</span>
+
+<span class="nd">@receiver</span><span class="p">(</span><span class="n">suspicious_login</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_suspicious_login</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">previous_countries</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">send_email</span><span class="p">(</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span>
+        <span class="n">subject</span><span class="o">=</span><span class="s2">&quot;Security Alert: New login from a new location&quot;</span><span class="p">,</span>
+        <span class="n">body</span><span class="o">=</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;We detected a login from </span><span class="si">{</span><span class="n">device</span><span class="o">.</span><span class="n">city</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">device</span><span class="o">.</span><span class="n">country</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Your previous logins were from: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">previous_countries</span><span class="p">)</span><span class="si">}</span><span class="s2">.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;If this wasn&#39;t you, revoke this device immediately.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="when-signals-fire">When Signals Fire<a class="headerlink" href="#when-signals-fire" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Signal(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User logs in</td>
+<td><code>device_created</code>, possibly <code>suspicious_login</code></td>
+</tr>
+<tr>
+<td>User calls <code>DELETE /trusted-devices/{uid}</code></td>
+<td><code>device_revoked</code></td>
+</tr>
+<tr>
+<td>User calls <code>POST /trusted-devices/logout</code></td>
+<td><code>device_revoked</code></td>
+</tr>
+<tr>
+<td>User calls <code>POST /trusted-devices/revoke-all</code></td>
+<td><code>device_revoked</code> (once per device)</td>
+</tr>
+<tr>
+<td>Stale device cleanup (login or management command)</td>
+<td><code>device_revoked</code> (once per device)</td>
+</tr>
+<tr>
+<td>Max device limit eviction</td>
+<td><code>device_revoked</code> (once per evicted device)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="registering-signal-handlers">Registering Signal Handlers<a class="headerlink" href="#registering-signal-handlers" title="Permanent link">&para;</a></h2>
+<p>Register your handlers in your app's <code>apps.py</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.apps</span><span class="w"> </span><span class="kn">import</span> <span class="n">AppConfig</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyAppConfig</span><span class="p">(</span><span class="n">AppConfig</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;myapp&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ready</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">signal_handlers</span>  <span class="c1"># noqa</span>
 </code></pre></div>
 
 
