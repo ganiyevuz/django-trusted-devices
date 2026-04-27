@@ -66,7 +66,15 @@ class TrustedDevice(Model):
     )
 
     ip_address = GenericIPAddressField(
-        help_text="IP address of the device used for authentication."
+        help_text="IP address of the device when first registered."
+    )
+    last_ip = GenericIPAddressField(
+        blank=True,
+        null=True,
+        help_text=(
+            "Most recently observed IP address. Compared against incoming "
+            "requests to detect concurrent-session hijacks."
+        ),
     )
     last_seen = DateTimeField(
         auto_now=True,
@@ -102,4 +110,6 @@ class TrustedDevice(Model):
         ordering = ["-created_at"]
         indexes = [
             Index(fields=["user"]),
+            Index(fields=["user", "-last_seen"]),
+            Index(fields=["last_seen"]),
         ]

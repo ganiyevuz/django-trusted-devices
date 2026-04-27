@@ -17,8 +17,19 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        django-version: ['5.2']
+        python-version: ["3.10", "3.11", "3.12"]
+        django-version: ["4.2", "5.0", "5.1", "5.2"]
+        exclude:
+          - python-version: "3.10"
+            django-version: "5.1"
+          - python-version: "3.10"
+            django-version: "5.2"
+
+    env:
+      PY_VERSION: ${{ matrix.python-version }}
+      DJANGO_VERSION: ${{ matrix.django-version }}
 
     steps:
       - name: 📥 Checkout Code
@@ -31,19 +42,19 @@ jobs:
 
       - name: 🐍 Setup Python & Create Virtualenv
         run: |
-          uv python install ${{ env.PYTHON_VERSION }}
-          uv venv
+          uv python install "$PY_VERSION"
+          uv venv --python "$PY_VERSION"
 
       - name: 📦 Install Dependencies
         run: |
-          uv pip install "Django~=${{ matrix.django-version }}.0"
+          uv pip install "Django~=${DJANGO_VERSION}.0"
           uv pip install -e ".[dev]"
 
       - name: 🧹 Run Linter (flake8)
-        run: uv run flake8 .
+        run: uv run flake8 src tests
 
-#      - name: ✅ Run Tests (pytest)
-#        run: uv run pytest --cov
+      - name: ✅ Run Tests (pytest)
+        run: uv run pytest --cov=trusted_devices --cov-report=term-missing
 
   publish:
     name: 📦 Publish to PyPI

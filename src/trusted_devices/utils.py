@@ -1,10 +1,14 @@
 import logging
+from hashlib import sha256
 from importlib import import_module
 from typing import Protocol, TypedDict
 
+from django.core.cache import cache
 from httpx import Client, HTTPError
 
 logger = logging.getLogger(__name__)
+
+_GEOLOCATION_CACHE_PREFIX = "trusted_devices:geo:"
 
 
 class LocationData(TypedDict, total=False):
@@ -44,12 +48,27 @@ _VALID_LOCATION_KEYS = frozenset(LocationData.__annotations__.keys())
 
 def get_client_ip(request) -> str:
     """
-    Returns the client's real IP address, checking 'X-Forwarded-For' first,
-    then falling back to 'REMOTE_ADDR'.
+    Returns the client's IP address.
+
+    By default, returns REMOTE_ADDR. If USE_X_FORWARDED_FOR is enabled,
+    parses the X-Forwarded-For header and returns the entry just to the
+    left of the trusted proxy chain (controlled by TRUSTED_PROXY_DEPTH),
+    which is the last untrusted hop and therefore the real client.
+
+    Trusting X-Forwarded-For without a known proxy in front of the app
+    lets a client spoof their own IP, so the default is conservative.
     """
-    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-    if x_forwarded_for:
-        return x_forwarded_for.split(",")[0].strip()
+    from trusted_devices.settings import trusted_device_settings
+
+    if trusted_device_settings.USE_X_FORWARDED_FOR:
+        xff = request.META.get("HTTP_X_FORWARDED_FOR")
+        if xff:
+            parts = [p.strip() for p in xff.split(",") if p.strip()]
+            depth = max(int(trusted_device_settings.TRUSTED_PROXY_DEPTH), 0)
+            if parts:
+                if depth and len(parts) > depth:
+                    return parts[-(depth + 1)]
+                return parts[0]
     return request.META.get("REMOTE_ADDR", "")
 
 
@@ -138,7 +157,16 @@ def get_geolocation_backend() -> GeolocationBackend:
             f"LocationData dict with keys: {_VALID_LOCATION_KEYS}."
         )
 
+    cache_ttl = int(trusted_device_settings.GEOLOCATION_CACHE_SECONDS or 0)
+
     def validated_backend(ip: str) -> LocationData:
+        cache_key = None
+        if cache_ttl and ip:
+            cache_key = _GEOLOCATION_CACHE_PREFIX + sha256(ip.encode()).hexdigest()
+            cached = cache.get(cache_key)
+            if cached is not None:
+                return cached
+
         raw = func(ip)
 
         if not isinstance(raw, dict):
@@ -160,11 +188,16 @@ def get_geolocation_backend() -> GeolocationBackend:
                 _VALID_LOCATION_KEYS,
             )
 
-        return {
+        result: LocationData = {
             "country": raw.get("country"),
             "region": raw.get("region"),
             "city": raw.get("city"),
         }
+
+        if cache_key is not None and any(result.values()):
+            cache.set(cache_key, result, cache_ttl)
+
+        return result
 
     return validated_backend
 

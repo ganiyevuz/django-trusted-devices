@@ -19,13 +19,16 @@ and enables per-device control over access and session management.
 * 🏷️ **Device naming** — let users label their devices ("Work Laptop", "iPhone")
 * 📍 **`is_current` flag** — identify which device is making the request
 * 🚨 **Suspicious login detection** — signals when a login comes from a new country
+* 🕵️ **Concurrent-session hijack detection** — same `device_uid` from a new IP inside a short window invalidates both sessions
 * 🔒 **Rate limiting** on login to prevent brute-force and device-creation spam
-* 📊 **Max device limit** — configurable cap with automatic oldest-device eviction
-* ⚠️ **Custom exception classes** — catchable, typed errors with stable error codes
+* 📊 **Max device limit** — configurable cap with automatic oldest-device eviction (race-safe under concurrent logins)
+* ⚠️ **Custom exception classes** — catchable, typed errors with stable error codes (and optional handler that surfaces `code` in JSON)
 * 📖 **Full OpenAPI/Swagger schema** via drf-spectacular
 * 🧩 **API-ready** — supports DRF out of the box
 * ⚙️ **Fully customizable** via `TRUSTED_DEVICE` Django settings
-* 🚫 **Rejects refresh/verify** from unknown devices
+* 🛰️ **Trusted-proxy aware** `X-Forwarded-For` parsing (off by default — opt in once behind a known reverse proxy)
+* 🌐 **Cached geolocation** — configurable per-IP TTL keeps login latency low
+* 🚫 **Rejects refresh/verify** from unknown or cross-user devices
 
 ---
 
@@ -65,8 +68,17 @@ TRUSTED_DEVICE = {
     "ALLOW_GLOBAL_UPDATE": True,           # Enable/disable device editing globally
     "MAX_DEVICES_PER_USER": None,          # None = unlimited, or set e.g. 5
     "GEOLOCATION_BACKEND": "trusted_devices.utils.get_location_data",
+    "GEOLOCATION_CACHE_SECONDS": 60 * 60 * 24,  # 24h cache; 0 disables
     "DEFAULT_CAN_UPDATE_OTHER_DEVICES": True,   # Default perm for new devices
     "DEFAULT_CAN_DELETE_OTHER_DEVICES": True,   # Default perm for new devices
+
+    # Trusted-proxy parsing — enable only when behind a known reverse proxy.
+    "USE_X_FORWARDED_FOR": False,
+    "TRUSTED_PROXY_DEPTH": 1,
+
+    # Concurrent-session hijack detection.
+    "DETECT_CONCURRENT_SESSIONS": True,
+    "CONCURRENT_SESSION_WINDOW_SECONDS": 60,
 }
 ```
 
@@ -78,10 +90,15 @@ TRUSTED_DEVICE = {
 | `UPDATE_DELAY_MINUTES` | `60` (1h) | Minimum device age before it can be edited |
 | `ALLOW_GLOBAL_DELETE` | `True` | Master switch for device deletion |
 | `ALLOW_GLOBAL_UPDATE` | `True` | Master switch for device editing |
-| `MAX_DEVICES_PER_USER` | `None` | Max active devices per user. Oldest evicted on new login |
+| `MAX_DEVICES_PER_USER` | `None` | Max active devices per user. Oldest evicted on new login (race-safe) |
 | `GEOLOCATION_BACKEND` | `"trusted_devices.utils.get_location_data"` | Dotted path to geolocation function |
+| `GEOLOCATION_CACHE_SECONDS` | `86400` | Per-IP cache TTL for geolocation lookups. `0` disables caching |
 | `DEFAULT_CAN_UPDATE_OTHER_DEVICES` | `True` | Default update permission for newly created devices |
 | `DEFAULT_CAN_DELETE_OTHER_DEVICES` | `True` | Default delete permission for newly created devices |
+| `USE_X_FORWARDED_FOR` | `False` | When `True`, parse `X-Forwarded-For` to determine client IP. Leave `False` if the app is exposed directly — clients can otherwise spoof their own IP |
+| `TRUSTED_PROXY_DEPTH` | `1` | Number of trusted reverse proxies between the client and the app. The client IP is taken at position `-(depth+1)` from the right of `X-Forwarded-For`, so spoofed leftmost entries are ignored |
+| `DETECT_CONCURRENT_SESSIONS` | `True` | If a token's `device_uid` is presented from a different IP within the window below, the device is deleted (kicking both sessions) and `device_compromised` is fired |
+| `CONCURRENT_SESSION_WINDOW_SECONDS` | `60` | Time window inside which a same-token IP change is treated as a hijack rather than a legitimate roaming user |
 
 ---
 
@@ -197,7 +214,12 @@ Connect to device lifecycle events:
 
 ```python
 from django.dispatch import receiver
-from trusted_devices.signals import device_created, device_revoked, suspicious_login
+from trusted_devices.signals import (
+    device_created,
+    device_revoked,
+    suspicious_login,
+    device_compromised,
+)
 
 @receiver(device_created)
 def on_new_device(sender, user, device, **kwargs):
@@ -217,6 +239,23 @@ def on_suspicious_login(sender, user, device, previous_countries, **kwargs):
         f"New login from {device.country} — was this you? "
         f"Your previous logins were from: {', '.join(previous_countries)}"
     )
+
+@receiver(device_compromised)
+def on_device_compromised(sender, device_uid, previous_ip, current_ip, **kwargs):
+    """
+    Fired when a token is presented from a new IP within
+    CONCURRENT_SESSION_WINDOW_SECONDS — the device record has already been
+    deleted by the time this signal fires. The `user` kwarg is provided
+    when the request reached the auth layer; on refresh-time detection,
+    `user_id` is provided instead.
+    """
+    user = kwargs.get("user")
+    user_id = kwargs.get("user_id") or (user.pk if user else None)
+    alert_security_team(
+        user_id=user_id,
+        message=f"Possible token theft for device {device_uid}: "
+                f"{previous_ip} → {current_ip}",
+    )
 ```
 
 | Signal | Args | When |
@@ -224,6 +263,7 @@ def on_suspicious_login(sender, user, device, previous_countries, **kwargs):
 | `device_created` | `user`, `device` | New device registered on login |
 | `device_revoked` | `user`, `device_uid` | Device deleted (via API, cleanup, or eviction) |
 | `suspicious_login` | `user`, `device`, `previous_countries` | Login from a new country |
+| `device_compromised` | `user` *or* `user_id`, `device_uid`, `previous_ip`, `current_ip` | Same `device_uid` used from a new IP inside `CONCURRENT_SESSION_WINDOW_SECONDS`. The device has already been deleted; both sessions are now invalid |
 
 ---
 
@@ -234,7 +274,8 @@ All exceptions are importable from `trusted_devices.exceptions`:
 | Exception | HTTP | Code | When |
 |-----------|------|------|------|
 | `DeviceUIDMissing` | 401 | `device_uid_missing` | Token has no `device_uid` claim |
-| `DeviceNotRecognized` | 401 | `device_not_recognized` | Device deleted or never existed |
+| `DeviceNotRecognized` | 401 | `device_not_recognized` | Device deleted, never existed, or belongs to a different user than the token claims |
+| `DeviceCompromised` | 401 | `device_compromised` | Same `device_uid` used from a new IP inside `CONCURRENT_SESSION_WINDOW_SECONDS`; session has been invalidated |
 | `InactiveAccount` | 401 | `inactive_account` | User disabled after token issued |
 | `TokenBlacklisted` | 400 | `token_blacklisted` | Rotated token reuse attempt |
 | `DeviceNotVerified` | 403 | `device_not_verified` | No current device on request |
@@ -255,6 +296,29 @@ try:
 except DeviceNotRecognized:
     # handle specifically instead of catching generic AuthenticationFailed
     pass
+```
+
+### Surfacing `code` in JSON responses (optional)
+
+DRF's default exception handler emits only `detail` in error bodies. To
+include the stable `code` alongside it — recommended for clients that
+branch on machine-readable error identifiers — wire up the bundled
+handler:
+
+```python
+REST_FRAMEWORK = {
+    # ...
+    "EXCEPTION_HANDLER": "trusted_devices.handlers.trusted_device_exception_handler",
+}
+```
+
+Responses then look like:
+
+```json
+{
+  "detail": "This session device is no longer valid.",
+  "code": "device_not_recognized"
+}
 ```
 
 ---
@@ -292,6 +356,46 @@ def maxmind_lookup(ip: str) -> LocationData:
 ```
 
 The backend's return value is automatically validated — unexpected keys are logged as warnings, non-dict returns are safely ignored.
+
+Geolocation results are cached per-IP for `GEOLOCATION_CACHE_SECONDS` (default 24h). Repeat lookups don't hit the backend, so login latency stays low and external API quota isn't spent re-resolving the same client. Set `GEOLOCATION_CACHE_SECONDS = 0` to disable.
+
+---
+
+## 🛰️ Trusted Proxies & Client IP
+
+By default the library uses `REMOTE_ADDR` as the client IP. The `X-Forwarded-For` header is **ignored** unless you opt in — otherwise a client connecting directly to the app could spoof their IP and country by setting the header themselves.
+
+When the app runs behind a known reverse proxy (Cloudflare, AWS ALB, nginx, etc.), enable parsing and tell the library how many trusted hops sit between the public client and Django:
+
+```python
+TRUSTED_DEVICE = {
+    "USE_X_FORWARDED_FOR": True,
+    "TRUSTED_PROXY_DEPTH": 1,  # 1 if you have one proxy, 2 if proxy → load balancer, etc.
+}
+```
+
+The client IP is read at position `-(TRUSTED_PROXY_DEPTH + 1)` from the right of `X-Forwarded-For`, which is the last entry an attacker cannot inject.
+
+---
+
+## 🕵️ Concurrent-Session Hijack Detection
+
+If a stolen access or refresh token is replayed from a different IP while the legitimate user is still active, the library treats it as a session hijack:
+
+1. On every authenticated request, the incoming IP is compared against the device's stored `last_ip`.
+2. If they differ **and** `last_seen` is within `CONCURRENT_SESSION_WINDOW_SECONDS` (default `60`), the device record is deleted.
+3. Both sessions immediately fail authentication on their next request (`DeviceCompromised`, code `device_compromised`).
+4. The `device_compromised` signal fires so you can alert the user, revoke related sessions, or escalate to a security team.
+
+Detection is on by default and respects `USE_X_FORWARDED_FOR` for IP attribution. To disable (e.g. if you have a roaming-heavy mobile audience), set:
+
+```python
+TRUSTED_DEVICE = {
+    "DETECT_CONCURRENT_SESSIONS": False,
+}
+```
+
+> ℹ️ Tune `CONCURRENT_SESSION_WINDOW_SECONDS` carefully. A short window catches active token-replay; a long window will cause false positives for users on flaky mobile networks where IPs change between requests.
 
 ---
 
@@ -332,7 +436,8 @@ Each trusted device includes:
 | `device_uid` | UUID primary key |
 | `name` | User-defined label (e.g. "Work Laptop") |
 | `user_agent` | Browser or app string |
-| `ip_address` | Client IP address |
+| `ip_address` | Client IP captured when the device was first registered |
+| `last_ip` | Most recently observed IP — compared against incoming requests for hijack detection |
 | `country` / `region` / `city` | Geolocation data |
 | `last_seen` / `created_at` | Activity timestamps |
 | `can_update_other_devices` | Permission flag |
@@ -342,11 +447,12 @@ Each trusted device includes:
 
 ## 🧠 How It Works
 
-1. **Login** → a `device_uid` is generated and embedded in the JWT token. A `TrustedDevice` record is created with IP, user agent, and geolocation.
-2. **Every API request** → `TrustedDeviceAuthentication` validates the `device_uid` from the token against the database and updates `last_seen`.
-3. **Token refresh** → validates the device still exists, updates `last_seen`, and optionally rotates the token.
+1. **Login** → a `device_uid` is generated and embedded in the JWT token. A `TrustedDevice` record is created (transactionally, with row-level locking on the user when `MAX_DEVICES_PER_USER` is set) with IP, user agent, and geolocation.
+2. **Every API request** → `TrustedDeviceAuthentication` validates the `device_uid` belongs to the token's user, runs hijack detection against `last_ip`, then updates `last_seen` + `last_ip`.
+3. **Token refresh** → validates the device still exists *for this user*, runs hijack detection, updates timestamps, and optionally rotates the token.
 4. **Device management** → users can list, rename, update permissions, or revoke their devices via the API.
 5. **Session revocation** → deleting a device record immediately blocks all requests using tokens linked to that device, even if the JWT hasn't expired.
+6. **Hijack invalidation** → if the same `device_uid` appears from a new IP within the configured window, the device record is deleted on the spot — both sessions fail their next call with `DeviceCompromised`.
 
 ---
 

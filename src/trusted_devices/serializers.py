@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db.transaction import atomic
 from django.utils import timezone
 from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
@@ -17,6 +18,7 @@ from rest_framework_simplejwt.tokens import UntypedToken
 
 from trusted_devices.exceptions import (
     DeviceNotRecognized,
+    DevicePermissionEscalation,
     InactiveAccount,
     TokenBlacklisted,
 )
@@ -63,15 +65,12 @@ class TrustedDeviceUpdateSerializer(ModelSerializer):
         fields = ["name", "can_delete_other_devices", "can_update_other_devices"]
 
     def validate(self, attrs):
-        from trusted_devices.exceptions import DevicePermissionEscalation
-
         request = self.context.get("request")
         if not request or not hasattr(request.user, "current_trusted_device"):
             return attrs
 
         current_device = request.user.current_trusted_device
 
-        # Prevent escalation: can't grant permissions you don't have
         if attrs.get("can_delete_other_devices") and not current_device.can_delete_other_devices:
             raise DevicePermissionEscalation()
 
@@ -101,29 +100,24 @@ class TrustedDeviceTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         device_uid = str(uuid4())
 
-        # Add device_uid to token
         refresh = self.get_token(self.user)
         refresh["device_uid"] = device_uid
 
-        # Enforce max device limit — evict oldest device if at capacity
-        self._enforce_device_limit(self.user)
-
-        # Save TrustedDevice instance with location data pre-filled
-        # to avoid the pre_save signal making a duplicate geolocation call
-        TrustedDevice.objects.create(
-            user=self.user,
-            device_uid=device_uid,
-            user_agent=user_agent,
-            ip_address=ip_address,
-            country=location_data.get("country"),
-            region=location_data.get("region"),
-            city=location_data.get("city"),
-            can_update_other_devices=trusted_device_settings.DEFAULT_CAN_UPDATE_OTHER_DEVICES,
-            can_delete_other_devices=trusted_device_settings.DEFAULT_CAN_DELETE_OTHER_DEVICES,
-        )
-
-        # Clean up stale devices whose refresh tokens have expired
-        self._cleanup_stale_devices(self.user)
+        with atomic():
+            self._enforce_device_limit(self.user)
+            TrustedDevice.objects.create(
+                user=self.user,
+                device_uid=device_uid,
+                user_agent=user_agent,
+                ip_address=ip_address,
+                last_ip=ip_address,
+                country=location_data.get("country"),
+                region=location_data.get("region"),
+                city=location_data.get("city"),
+                can_update_other_devices=trusted_device_settings.DEFAULT_CAN_UPDATE_OTHER_DEVICES,
+                can_delete_other_devices=trusted_device_settings.DEFAULT_CAN_DELETE_OTHER_DEVICES,
+            )
+            self._cleanup_stale_devices(self.user)
 
         data.update(
             {
@@ -138,24 +132,26 @@ class TrustedDeviceTokenObtainPairSerializer(TokenObtainPairSerializer):
     @staticmethod
     def _enforce_device_limit(user):
         """
-        If MAX_DEVICES_PER_USER is set, removes the oldest devices
-        (by last_seen) to make room for the new one.
+        If MAX_DEVICES_PER_USER is set, evict the oldest devices to make
+        room for a new one. Locks the user row so concurrent logins for the
+        same user serialize through this section.
         """
         max_devices = trusted_device_settings.MAX_DEVICES_PER_USER
         if not max_devices:
             return
 
+        get_user_model().objects.select_for_update().filter(pk=user.pk).first()
+
         device_count = TrustedDevice.objects.filter(user=user).count()
         if device_count >= max_devices:
-            # Keep the (max_devices - 1) most recently seen, delete the rest
-            devices_to_keep = (
+            devices_to_keep = list(
                 TrustedDevice.objects.filter(user=user)
                 .order_by("-last_seen")
                 .values_list("device_uid", flat=True)[: max_devices - 1]
             )
             evicted, _ = (
                 TrustedDevice.objects.filter(user=user)
-                .exclude(device_uid__in=list(devices_to_keep))
+                .exclude(device_uid__in=devices_to_keep)
                 .delete()
             )
             if evicted:
@@ -191,18 +187,52 @@ class TrustedDeviceTokenRefreshSerializer(TokenRefreshSerializer):
     """
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, str]:
+        from trusted_devices.exceptions import DeviceCompromised
+        from trusted_devices.signals import device_compromised
+
         refresh = self.token_class(attrs["refresh"])
         device_uid = refresh.payload.get("device_uid")
+        user_id = refresh.payload.get(api_settings.USER_ID_CLAIM)
 
-        if not TrustedDevice.objects.filter(device_uid=device_uid).exists():
+        device = (
+            TrustedDevice.objects.filter(
+                device_uid=device_uid, user_id=user_id
+            )
+            .only("device_uid", "user_id", "last_ip", "last_seen")
+            .first()
+        )
+        if not device:
             raise DeviceNotRecognized()
 
-        # Use update() to avoid triggering pre_save signal
+        request = self.context.get("request")
+        current_ip = get_client_ip(request) if request else ""
+
+        if self._is_concurrent_session_hijack(device, current_ip):
+            previous_ip = device.last_ip or ""
+            logger.warning(
+                "Concurrent session hijack detected on refresh for user %s "
+                "device %s: previous_ip=%s current_ip=%s",
+                user_id,
+                device.device_uid,
+                previous_ip,
+                current_ip,
+            )
+            compromised_uid = device.device_uid
+            device.delete()
+            device_compromised.send(
+                sender=TrustedDevice,
+                user_id=user_id,
+                device_uid=compromised_uid,
+                previous_ip=previous_ip,
+                current_ip=current_ip,
+            )
+            raise DeviceCompromised()
+
         TrustedDevice.objects.filter(device_uid=device_uid).update(
-            last_seen=timezone.now()
+            last_seen=timezone.now(),
+            last_ip=current_ip or device.last_ip,
         )
 
-        user_id = refresh.payload.get(api_settings.USER_ID_CLAIM)
         user = (
             get_user_model()
             .objects.filter(**{api_settings.USER_ID_FIELD: user_id})
@@ -229,6 +259,21 @@ class TrustedDeviceTokenRefreshSerializer(TokenRefreshSerializer):
 
         return data
 
+    @staticmethod
+    def _is_concurrent_session_hijack(device: TrustedDevice, current_ip: str) -> bool:
+        from datetime import timedelta
+
+        if not trusted_device_settings.DETECT_CONCURRENT_SESSIONS:
+            return False
+        if not current_ip or not device.last_ip:
+            return False
+        if current_ip == device.last_ip:
+            return False
+        window = timedelta(
+            seconds=trusted_device_settings.CONCURRENT_SESSION_WINDOW_SECONDS
+        )
+        return device.last_seen >= timezone.now() - window
+
 
 class TrustedDeviceTokenVerifySerializer(TokenVerifySerializer):
     """
@@ -248,9 +293,14 @@ class TrustedDeviceTokenVerifySerializer(TokenVerifySerializer):
                 raise TokenBlacklisted()
 
         device_uid = token.payload.get("device_uid")
+        user_id = token.payload.get(api_settings.USER_ID_CLAIM)
+
         if (
             not device_uid
-            or not TrustedDevice.objects.filter(device_uid=device_uid).exists()
+            or not user_id
+            or not TrustedDevice.objects.filter(
+                device_uid=device_uid, user_id=user_id
+            ).exists()
         ):
             raise DeviceNotRecognized()
 

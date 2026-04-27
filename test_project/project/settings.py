@@ -94,7 +94,7 @@ SIMPLE_JWT = {
 SPECTACULAR_SETTINGS = {
     "TITLE": "Django Trusted Devices API",
     "DESCRIPTION": "Secure and manage trusted login devices for Django users",
-    "VERSION": "1.2",
+    "VERSION": "1.5",
     "SERVE_INCLUDE_SCHEMA": False,
     "COMPONENT_SPLIT_REQUEST": True,
     "SORT_OPERATION_PARAMETERS": True,

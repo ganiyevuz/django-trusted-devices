@@ -16,6 +16,14 @@ class DeviceNotRecognized(AuthenticationFailed):
     default_code = "device_not_recognized"
 
 
+class DeviceCompromised(AuthenticationFailed):
+    default_detail = (
+        "Concurrent session use detected from a different IP. "
+        "This session has been invalidated. Please log in again."
+    )
+    default_code = "device_compromised"
+
+
 class InactiveAccount(AuthenticationFailed):
     default_detail = "User account is inactive."
     default_code = "inactive_account"

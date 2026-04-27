@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django-trusted-devices"
-version = "1.4"
+version = "1.5"
 description = "Secure and manage trusted login devices for Django users"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -13,7 +13,7 @@ authors = [
     { name = "Jakhongir Ganiev", email = "contact@jakhongir.dev" }
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Framework :: Django",
     "Framework :: Django :: 4.2",
     "Framework :: Django :: 5.0",
@@ -41,11 +41,14 @@ docs = ["mkdocs", "mkdocs-material"]
 dev = [
     "black>=25.1.0",
     "build>=1.2.2.post1",
+    "factory-boy>=3.3.0",
     "flake8>=7.2.0",
+    "freezegun>=1.5.0",
     "isort>=6.0.1",
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
     "pytest-django>=4.11.1",
+    "pytest-mock>=3.14.0",
     "twine>=6.1.0",
 ]
 
@@ -67,6 +70,9 @@ multi_line_output = 3
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+pythonpath = ["."]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+addopts = "-ra --strict-markers"
 
 [dependency-groups]
 dev = [

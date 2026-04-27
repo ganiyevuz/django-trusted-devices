@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 device_created = Signal()  # args: user, device
 device_revoked = Signal()  # args: user, device_uid
 suspicious_login = Signal()  # args: user, device, previous_countries
+device_compromised = Signal()  # args: user, device_uid, previous_ip, current_ip
 
 
 @receiver(pre_save, sender=TrustedDevice)
