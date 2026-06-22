@@ -370,7 +370,7 @@ wheels = [
 
 [[package]]
 name = "django-trusted-devices"
-version = "1.6"
+version = "2.0"
 source = { editable = "." }
 dependencies = [
     { name = "django" },
@@ -409,7 +409,7 @@ dev = [
 requires-dist = [
     { name = "black", marker = "extra == 'dev'", specifier = ">=25.1.0" },
     { name = "build", marker = "extra == 'dev'", specifier = ">=1.2.2.post1" },
-    { name = "django", specifier = ">=4.2,<5.3" },
+    { name = "django", specifier = ">=5.2,<6.1" },
     { name = "djangorestframework", specifier = ">=3.14.0" },
     { name = "djangorestframework-simplejwt", specifier = ">=5.5.0" },
     { name = "drf-spectacular", specifier = ">=0.28.0" },

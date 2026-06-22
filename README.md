@@ -480,7 +480,7 @@ pytest
 
 ## 🧱 Dependencies
 
-* Django >= 4.2
+* Django >= 5.2, < 6.1 (5.2 LTS and 6.0)
 * Django REST Framework >= 3.14.0
 * djangorestframework-simplejwt >= 5.5.0
 * drf-spectacular >= 0.28.0
