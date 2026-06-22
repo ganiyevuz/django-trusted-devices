@@ -106,11 +106,14 @@ Returns all trusted devices for the authenticated user.
     "name": "Work Laptop",
     "user_agent": "Mozilla/5.0 ...",
     "ip_address": "203.0.113.42",
+    "last_ip": "203.0.113.42",
     "country": "United States",
     "region": "California",
     "city": "San Francisco",
     "last_seen": "2026-03-22T10:30:00Z",
     "created_at": "2026-03-15T08:00:00Z",
+    "can_update_other_devices": true,
+    "can_delete_other_devices": true,
     "is_current": true
   },
   {
@@ -118,11 +121,14 @@ Returns all trusted devices for the authenticated user.
     "name": "",
     "user_agent": "okhttp/4.12.0",
     "ip_address": "198.51.100.7",
+    "last_ip": "198.51.100.23",
     "country": "Germany",
     "region": "Berlin",
     "city": "Berlin",
     "last_seen": "2026-03-20T14:22:00Z",
     "created_at": "2026-03-10T09:15:00Z",
+    "can_update_other_devices": false,
+    "can_delete_other_devices": false,
     "is_current": false
   }
 ]
@@ -219,7 +225,8 @@ Revoke all device sessions except the current one.
 | `name` | `CharField` | User-defined label (e.g. "Work Laptop") |
 | `user` | `ForeignKey` | The user this device belongs to |
 | `user_agent` | `TextField` | Browser or app user agent string |
-| `ip_address` | `GenericIPAddressField` | Client IP address |
+| `ip_address` | `GenericIPAddressField` | Client IP address at registration |
+| `last_ip` | `GenericIPAddressField` | Most recently observed IP (used for hijack detection) |
 | `country` | `CharField` | Country from geolocation |
 | `region` | `CharField` | Region/state from geolocation |
 | `city` | `CharField` | City from geolocation |

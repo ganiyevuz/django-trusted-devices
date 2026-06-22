@@ -176,11 +176,14 @@ router.register(r'trusted-devices', TrustedDeviceViewSet, basename='trusted-devi
     "name": "Work Laptop",
     "user_agent": "Mozilla/5.0 ...",
     "ip_address": "203.0.113.42",
+    "last_ip": "203.0.113.42",
     "country": "United States",
     "region": "California",
     "city": "San Francisco",
     "last_seen": "2026-03-22T10:30:00Z",
     "created_at": "2026-03-15T08:00:00Z",
+    "can_update_other_devices": true,
+    "can_delete_other_devices": true,
     "is_current": true
   },
   {
@@ -188,11 +191,14 @@ router.register(r'trusted-devices', TrustedDeviceViewSet, basename='trusted-devi
     "name": "",
     "user_agent": "okhttp/4.12.0",
     "ip_address": "198.51.100.7",
+    "last_ip": "198.51.100.23",
     "country": "Germany",
     "region": "Berlin",
     "city": "Berlin",
     "last_seen": "2026-03-20T14:22:00Z",
     "created_at": "2026-03-10T09:15:00Z",
+    "can_update_other_devices": false,
+    "can_delete_other_devices": false,
     "is_current": false
   }
 ]

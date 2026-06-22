@@ -41,11 +41,14 @@ class TrustedDeviceListSerializer(ModelSerializer):
             "name",
             "user_agent",
             "ip_address",
+            "last_ip",
             "country",
             "region",
             "city",
             "last_seen",
             "created_at",
+            "can_update_other_devices",
+            "can_delete_other_devices",
             "is_current",
         ]
         read_only_fields = fields
